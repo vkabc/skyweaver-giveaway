@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@mdi/font": "^6.7.96",
+    "0xsequence": "^0.35.2",
+    "ethers": "^5.5.1",
+    "pinia": "^2.0.14",
     "vue": "^3.2.25"
   },
   "devDependencies": {

@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {ref} from 'vue'
 import EmojionePartyPopper from '~icons/emojione/party-popper'
+import {useSequenceStore} from "../stores/sequence";
 
 
-const count = ref(0)
+const store = useSequenceStore()
+
 </script>
 
 <template>
@@ -19,11 +20,11 @@ const count = ref(0)
       </div>
     </div>
 
-    <button
-        class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white ">
+    <button @click="store.connectWallet"
+            class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white ">
           <span
               class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-            Connect Now!
+            Connect to wallet to start!
           </span>
     </button>
 

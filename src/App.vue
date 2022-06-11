@@ -5,13 +5,14 @@ import GuestPage from './pages/GuestPage.vue'
 import Header from './components/Header.vue'
 
 import {useSequenceStore} from "./stores/sequence";
+
 const store = useSequenceStore()
 store.onPageLaunch()
 </script>
 
 <template>
   <Header/>
-  <GuestPage />
+  <router-view></router-view>
 </template>
 
 <style>

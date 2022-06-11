@@ -7,6 +7,7 @@ import { sequenceContext, NetworkConfig } from "@0xsequence/network"
 import { config } from "../utils/settings"
 import { Indexer } from "@0xsequence/indexer"
 import { sequence } from "0xsequence"
+import {useRouter} from "vue-router";
 
 export const services = {
     api: `https://api.sequence.app`,
@@ -20,6 +21,7 @@ enum SignerLevel {
 }
 
 export const useSequenceStore = defineStore("sequence", () => {
+    const router = useRouter()
     const isLoggedIn = ref(false)
     const sequenceWallet = ref(new sequence.Wallet("polygon"))
     const status = ref({ waitingFor: "signer" })
@@ -93,6 +95,7 @@ export const useSequenceStore = defineStore("sequence", () => {
         console.log("metadata", metadata)
         console.log("indexer", indexers)
         //return polygon chain indexer
+
         return indexers[137]
     }
 

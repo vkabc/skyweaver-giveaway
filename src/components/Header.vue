@@ -5,13 +5,16 @@ import {fetchBalances} from "../utils/contracts";
 import {normalizeAddress} from "../utils/utils";
 import {onMounted} from "vue";
 import {sequence} from "0xsequence";
+import {useRouter} from "vue-router";
 
 const store = useSequenceStore()
+const router = useRouter()
 const toggleSignIn = async (isConnected: boolean): Promise<void> => {
 
   if (isConnected) {
     //store.disconnectWallet()
     await store.disconnectWallet()
+    await router.push('/')
   } else {
     await store.connectWallet()
   }

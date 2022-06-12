@@ -32,6 +32,8 @@
 
 https://skyweavergiveaway.vkabc.xyz/
 
+credits to https://github.com/arilotter/vaportrade for sequence api related code
+
 <br />
 
 ## Built-with
@@ -41,6 +43,8 @@ https://skyweavergiveaway.vkabc.xyz/
 -   [Tailwind CSS]
 
 <br />
+
+
 
 <!-- GETTING STARTED -->
 

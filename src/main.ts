@@ -6,7 +6,7 @@ import IndexPage from "./pages/IndexPage.vue"
 import SenderPage from "./pages/SenderPage.vue"
 import * as VueRouter from "vue-router"
 import { useSequenceStore } from "./stores/sequence"
-
+import 'sweetalert2/src/sweetalert2.scss'
 
 const routes = [
     { path: "/", component: IndexPage },

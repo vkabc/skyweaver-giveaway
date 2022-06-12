@@ -9,6 +9,8 @@ import { Indexer } from "@0xsequence/indexer"
 import { sequence } from "0xsequence"
 import { useRouter } from "vue-router"
 import { normalizeAddress } from "../utils/utils"
+import { Receiver, TokensMerged } from "../utils/interfaces"
+import Swal from "sweetalert2"
 
 const corsProxy = config.corsAnywhereUrl
 export const services = {
@@ -22,14 +24,6 @@ enum SignerLevel {
     Bronze = 1,
 }
 
-export interface TokensMerged {
-    balance: string,
-    image: string,
-    tokenID: string,
-    name: string,
-    checked: boolean,
-
-}
 export const useSequenceStore = defineStore("sequence", () => {
     const sequenceApiClient = ref(
         {} as {
@@ -111,6 +105,7 @@ export const useSequenceStore = defineStore("sequence", () => {
             ),
             session.getMetadataClient(),
         ])
+        status.value = { waitingFor: "done" }
         console.log("metadata", metadata)
         console.log("indexer", indexers)
 
@@ -120,16 +115,96 @@ export const useSequenceStore = defineStore("sequence", () => {
 
         return { indexer: indexers[137], metadata }
     }
+    const sendTransaction = async (
+        receiverList: Receiver[],
+        tokenList: TokensMerged[]
+    ) => {
+        const finalTokenList = tokenList.filter((token) => {
+            return token.checked && token.givingEachQuantity > 0
+        })
+        // :todo we can also do a final check for quantity sending is it sufficient
+        if (finalTokenList.length < 1) {
+            await Swal.fire({
+                icon: "error",
+                title: "Sending no tokens!",
+                text: "Aborting mission!",
+            })
+            return
+        } else if (receiverList.length < 1) {
+            await Swal.fire({
+                icon: "error",
+                title: "Sending to no one!",
+                text: "Aborting mission!",
+            })
+            return
+        }
+        const erc1155Interface = new ethers.utils.Interface([
+            "function safeBatchTransferFrom(address _from, address _to, uint256[] _id, uint256[] _value, bytes calldata _data)",
+        ])
+        const senderAddress = await sequenceWallet.value.getAddress()
+
+        let transactions: { to: string; data: string }[] = []
+
+        const skyweaverAddress: string =
+            "0x631998e91476da5b870d741192fc5cbc55f5a52e"
+
+        const tokenIds = finalTokenList.map((token) => token.tokenID)
+        const amountsForEachToken = finalTokenList.map(
+            (token) => token.givingEachQuantity * 100
+        )
+        receiverList.forEach((receiver) => {
+            const functionFragment: string =
+                erc1155Interface.encodeFunctionData("safeBatchTransferFrom", [
+                    senderAddress,
+                    receiver.account.address,
+                    tokenIds,
+                    amountsForEachToken,
+                    "0x",
+                ])
+            transactions.push({ to: skyweaverAddress, data: functionFragment })
+        })
+
+        const signer = sequenceWallet.value.getSigner()
+        try{
+            const response = await signer.sendTransactionBatch(transactions)
+            if(response.confirmations && response.confirmations >= 2){
+                await Swal.fire({
+                    icon: "success",
+                    title: "Successful",
+                    text: "Items successfully sent",
+                })
+                // :todo refresh user tokens
+            }
+            else{
+                await Swal.fire({
+                    icon: "error",
+                    title: "Check Sequence Wallet",
+                    text: "Check Sequence Wallet for transaction",
+                })
+            }
+        }
+        catch (e){
+            await Swal.fire({
+                icon: "error",
+                title: "Not Sent",
+                text: "Aborting mission!",
+            })
+            return
+        }
+
+    }
 
     return {
         sequenceWallet,
         isLoggedIn,
         sequenceApiClient,
         tokensMerged,
+        status,
         connectWallet,
         disconnectWallet,
         onPageLaunch,
         getIndexer,
+        sendTransaction,
     }
 })
 

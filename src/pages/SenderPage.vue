@@ -1,25 +1,59 @@
 <script setup lang="ts">
 import EmojionePartyPopper from '~icons/emojione/party-popper'
-import {useSequenceStore} from "../stores/sequence";
+import {TokensMerged, useSequenceStore} from "../stores/sequence";
 import {onMounted, Ref, ref} from "vue";
-import {debounce} from 'lodash'
-
+import {debounce, toNumber} from 'lodash'
+import Swal from 'sweetalert2'
+import {Receiver} from "../utils/interfaces";
 
 const store = useSequenceStore()
 
 const isUserFound = ref(false)
 const searchUserInputBox = ref("")
 const searchResultCount = ref(-1)
-const userDetails: Ref<{ account: {} }> = ref({account: {}})
-const receiverList: Ref<{ account: {} }[]> = ref([])
+const userDetails: Ref<Receiver> = ref({account: {address: ""}})
+const receiverList: Ref<Receiver[]> = ref([])
 const addUser = debounce(() => {
   receiverList.value.push(userDetails.value)
-  userDetails.value = {account: {}}
+  userDetails.value = {account: {address: ""}}
   searchResultCount.value = -1
   searchUserInputBox.value.value = ""
   isUserFound.value = false
 }, 0)
 
+const chooseQuantity = async (token: TokensMerged) => {
+
+  console.log(receiverList.value.length)
+  if (receiverList.value.length < 1) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Add a user',
+      text: 'Add at least 1 user as receiver first',
+    })
+    return
+  }
+  const {isDismissed: userCancelled, value: quantity} = await Swal.fire({
+    title: token.name,
+    input: 'number',
+    inputLabel: 'choose number to send to (EACH Person)',
+    inputPlaceholder: 'Choose quantity'
+  })
+
+  console.log(userCancelled)
+  if (userCancelled) {
+    return
+  }
+  if (quantity * receiverList.value.length <= toNumber(token.balance) / 100) {
+    token.givingEachQuantity = quantity
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'You are giving more than you owned!',
+    })
+  }
+
+}
 const onInput = debounce(async (e) => {
 
   const searchInput = e.target.value.toLowerCase()
@@ -34,7 +68,7 @@ const onInput = debounce(async (e) => {
   const response = await fetch('https://api.skyweaver.net/rpc/SkyWeaverAPI/ListLeaderboard', options)
   const responseBody = await response.text()
   const result = JSON.parse(responseBody).res
-  if (result.length === 1 || result[0].account.name.toLowerCase() === searchInput) {
+  if (result.length === 1 || (result.length > 0 && result[0].account.name.toLowerCase() === searchInput)) {
     userDetails.value = result[0]
     isUserFound.value = true
     console.log("userDetails", userDetails)
@@ -44,8 +78,16 @@ const onInput = debounce(async (e) => {
   searchResultCount.value = result.length
 }, 500)
 
+const deleteUser = (userAddress: string, e: PointerEvent) => {
 
-const toggleItemSelection = (tokenID: string) => {
+  e.stopPropagation()
+  receiverList.value = receiverList.value.filter(receiver => receiver.account.address !== userAddress)
+
+}
+
+const deleteToken = (tokenID: string, e: PointerEvent) => {
+
+  e.stopPropagation()
   store.tokensMerged = store.tokensMerged.filter(token => token.tokenID !== tokenID)
 
 }
@@ -103,8 +145,8 @@ const toggleItemSelection = (tokenID: string) => {
           </div>
         </div>
         <button @click="addUser" :disabled="!isUserFound"
-                :class="{' bg-gray-600 hover:bg-gray-600': !isUserFound}"
-                class="inline-flex  py-2.5 px-3 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 ">
+                :class="{' bg-gray-400 ': !isUserFound, 'bg-blue-700 hover:bg-blue-800':isUserFound }"
+                class="inline-flex  py-2.5 px-3 ml-2 text-sm font-medium text-white rounded-lg border border-blue-700  focus:ring-4 focus:outline-none focus:ring-blue-300 ">
           <!--        <svg class="mr-2 -ml-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"-->
           <!--             xmlns="http://www.w3.org/2000/svg">-->
           <!--          <path   stroke-width="3"-->
@@ -120,29 +162,34 @@ const toggleItemSelection = (tokenID: string) => {
       </form>
 
       <ul>
-        <li v-for="receiver in receiverList " @click="toggleItemSelection(token.tokenID)"
+        <li v-for="receiver in receiverList "
             class="mb-2 rounded-xl bg-gradient-to-r bg-white border border-gray-200 p-2 sm:p-6 hover:bg-gray-100 ">
           <div class="flex">
 
             <div class="ml-2 text-sm">
               <label
                   class="font-medium text-gray-900 dark:text-gray-300">{{ receiver.account.name }}</label>
-              <p id="helper-checkbox-text" class="text-xs font-normal text-gray-500 dark:text-gray-300">
+              <p class="text-xs font-normal text-gray-500 dark:text-gray-300">
                 {{ receiver.account.address }}</p>
             </div>
 
             <div class="flex items-center h-5 ml-auto">
-              <button type="button"
-                      class="text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd"
-                        d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-                        clip-rule="evenodd"></path>
+
+              <button type="button" class="inset-y-0 right-0 items-center pr-3"
+                      @click="deleteUser(receiver.account.address, $event)">
+                <svg class="w-4 h-4 text-gray-500 hover:text-gray-900" xmlns="http://www.w3.org/2000/svg"
+                     xmlns:xlink="http://www.w3.org/1999/xlink" width="1em" height="1em"
+                     preserveAspectRatio="xMidYMid meet"
+                     viewBox="0 0 24 24"
+                     style="-ms-transform: rotate(360deg); -webkit-transform: rotate(360deg); transform: rotate(360deg);">
+                  <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M6.758 17.243L12.001 12m5.243-5.243L12 12m0 0L6.758 6.757M12.001 12l5.243 5.243"/>
                 </svg>
               </button>
-
             </div>
           </div>
+
         </li>
       </ul>
 
@@ -150,8 +197,14 @@ const toggleItemSelection = (tokenID: string) => {
         Choose Quantity
       </div>
 
-      <ul>
-        <li v-for="token in store.tokensMerged.filter((theToken) => theToken.checked) "
+<!--       :todo indexer loading-->
+      <div v-if="store.status.waitingFor !== 'done'">
+        {{ store.status }}
+      </div>
+      <ul class="mb-4">
+
+        <li v-for="token in store.tokensMerged.filter((theToken) => theToken.checked)  "
+            @click="chooseQuantity(token, $event)"
             class="mb-2 rounded-xl bg-gradient-to-r bg-white border border-gray-200 p-2 sm:p-6 hover:bg-gray-100 ">
           <div class="flex">
 
@@ -162,12 +215,13 @@ const toggleItemSelection = (tokenID: string) => {
               <label
                   class="font-medium text-gray-900 dark:text-gray-300">{{ token.name }}</label>
               <p id="helper-checkbox-text" class="text-xl font-bold text-gray-500 dark:text-gray-300">
-                {{0}}x{{receiverList.length}} person/{{ token.balance / 100 }}</p>
+                {{ token.givingEachQuantity }}x{{ receiverList.length }} person/{{ token.balance / 100 }}</p>
             </div>
 
             <div class="flex items-center h-5 ml-auto">
 
-              <button type="button" class="inset-y-0 right-0 items-center pr-3" @click="toggleItemSelection(token.tokenID)">
+              <button type="button" class="inset-y-0 right-0 items-center pr-3"
+                      @click="deleteToken(token.tokenID, $event)">
                 <svg class="w-4 h-4 text-gray-500 hover:text-gray-900" xmlns="http://www.w3.org/2000/svg"
                      xmlns:xlink="http://www.w3.org/1999/xlink" width="1em" height="1em"
                      preserveAspectRatio="xMidYMid meet"
@@ -181,10 +235,31 @@ const toggleItemSelection = (tokenID: string) => {
             </div>
           </div>
         </li>
+
+        <li
+            @click="$router.push('/')"
+            class="mb-2 rounded-xl bg-gradient-to-r bg-white border border-gray-200 p-2 sm:p-6 hover:bg-gray-100 ">
+          <div class="flex">
+
+            <div class="ml-2 text-sm">
+              <label
+                  class="font-medium text-gray-900 dark:text-gray-300">Go back</label>
+              <p class="text-xl font-bold text-gray-500 dark:text-gray-300">
+                Add More Items
+              </p>
+            </div>
+
+            <div class="flex items-center h-5 ml-auto">
+
+            </div>
+          </div>
+        </li>
       </ul>
+      <button type="button" @click="store.sendTransaction(receiverList, store.tokensMerged)"
+              class="w-full font-bold text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+        Submit to Sequence!
+      </button>
     </div>
-
-
 
 
   </div>

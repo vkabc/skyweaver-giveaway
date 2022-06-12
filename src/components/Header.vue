@@ -20,6 +20,7 @@ const toggleSignIn = async (isConnected: boolean): Promise<void> => {
     await store.connectWallet()
   }
 }
+
 onMounted(async () => {
   const indexer = await store.getIndexer()
   const skyweaverAddress: string = "0x631998e91476da5b870d741192fc5cbc55f5a52e"
@@ -44,7 +45,9 @@ onMounted(async () => {
       const tokensMerged = skyweaverTokens.map(v => {
         return (
             {
-              ...v, ...tokenMetadata.tokenMetadata.find(metadata => metadata.tokenId === v.tokenID), checked: true,
+              ...v, ...tokenMetadata.tokenMetadata.find(metadata => metadata.tokenId === v.tokenID),
+              checked: false,
+              givingEachQuantity: 0,
             }
         )
       });

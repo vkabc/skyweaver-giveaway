@@ -7,11 +7,13 @@ import { sequenceContext, NetworkConfig } from "@0xsequence/network"
 import { config } from "../utils/settings"
 import { Indexer } from "@0xsequence/indexer"
 import { sequence } from "0xsequence"
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router"
+import { normalizeAddress } from "../utils/utils"
 
+const corsProxy = config.corsAnywhereUrl
 export const services = {
     api: `https://api.sequence.app`,
-    metadata: `https://metadata.sequence.app`,
+    metadata: `${corsProxy}https://metadata.sequence.app`,
 } as const
 
 enum SignerLevel {
@@ -20,8 +22,22 @@ enum SignerLevel {
     Bronze = 1,
 }
 
+export interface TokensMerged {
+    balance: string,
+    image: string,
+    tokenID: string,
+    name: string,
+    checked: boolean,
+
+}
 export const useSequenceStore = defineStore("sequence", () => {
-    const router = useRouter()
+    const sequenceApiClient = ref(
+        {} as {
+            indexer: Indexer
+            metadataClient: sequence.metadata.SequenceMetadataClient
+        }
+    )
+    const tokensMerged = ref([] as TokensMerged[])
     const isLoggedIn = ref(false)
     const sequenceWallet = ref(new sequence.Wallet("polygon"))
     const status = ref({ waitingFor: "signer" })
@@ -29,14 +45,17 @@ export const useSequenceStore = defineStore("sequence", () => {
         isLoggedIn.value = sequenceWallet.value.isConnected()
     }
     const connectWallet = async (): Promise<void> => {
-       await sequenceWallet.value.connect()
-       isLoggedIn.value = true
+        await sequenceWallet.value.connect()
+        isLoggedIn.value = true
     }
     const disconnectWallet = (): void => {
         sequenceWallet.value.disconnect()
         isLoggedIn.value = false
     }
-    const getIndexer = async (): Promise<Indexer> => {
+    const getIndexer = async (): Promise<{
+        indexer: Indexer
+        metadata: sequence.metadata.SequenceMetadataClient
+    }> => {
         // Hardcoded useless wallet key, so that you can get into Sequence API.
         const wallet = ethers.Wallet.fromMnemonic(
             "charge era satisfy ocean inmate miracle frown slab security note cover amused"
@@ -94,12 +113,24 @@ export const useSequenceStore = defineStore("sequence", () => {
         ])
         console.log("metadata", metadata)
         console.log("indexer", indexers)
-        //return polygon chain indexer
 
-        return indexers[137]
+        //return polygon chain indexer
+        sequenceApiClient.value["indexer"] = indexers[137]
+        sequenceApiClient.value["metadataClient"] = metadata
+
+        return { indexer: indexers[137], metadata }
     }
 
-    return { sequenceWallet, isLoggedIn, connectWallet, disconnectWallet, onPageLaunch,  getIndexer }
+    return {
+        sequenceWallet,
+        isLoggedIn,
+        sequenceApiClient,
+        tokensMerged,
+        connectWallet,
+        disconnectWallet,
+        onPageLaunch,
+        getIndexer,
+    }
 })
 
 if (import.meta.hot) {

@@ -6,6 +6,7 @@ import {normalizeAddress} from "../utils/utils";
 import {onMounted} from "vue";
 import {sequence} from "0xsequence";
 import {useRouter} from "vue-router";
+import {Session} from "@0xsequence/auth";
 
 const store = useSequenceStore()
 const router = useRouter()
@@ -21,12 +22,37 @@ const toggleSignIn = async (isConnected: boolean): Promise<void> => {
 }
 onMounted(async () => {
   const indexer = await store.getIndexer()
-  const balances = await fetchBalances(indexer, normalizeAddress("0x821642365e2e3e7369e3305364c1bC0A0f585739"))
-  console.log(balances)
+  const skyweaverAddress: string = "0x631998e91476da5b870d741192fc5cbc55f5a52e"
 
-   console.log(balances.filter((balance) =>
-       balance.contractAddress === "0x631998e91476da5b870d741192fc5cbc55f5a52e"
-   ))
+  if (store.sequenceWallet.isConnected()) {
+    const session = store.sequenceWallet.getSession()
+    if (session !== undefined && session.accountAddress !== undefined) {
+      const balances = await fetchBalances(indexer.indexer, normalizeAddress(session.accountAddress))
+
+      console.log(balances)
+
+      const skyweaverTokens = balances.filter((balance) =>
+          balance.contractAddress === skyweaverAddress
+      )
+      console.log(skyweaverTokens)
+      const tokenMetadata = await indexer.metadata.getTokenMetadata({
+        chainID: "137",
+        contractAddress: normalizeAddress(skyweaverAddress),
+        tokenIDs: skyweaverTokens.map((token) => token.tokenID)
+      })
+      console.log(tokenMetadata)
+      const tokensMerged = skyweaverTokens.map(v => {
+        return (
+            {
+              ...v, ...tokenMetadata.tokenMetadata.find(metadata => metadata.tokenId === v.tokenID), checked: true,
+            }
+        )
+      });
+      console.log("tokensMerged", tokensMerged)
+      store.tokensMerged = tokensMerged
+    }
+  }
+
 
 })
 </script>

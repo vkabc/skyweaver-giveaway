@@ -1,9 +1,24 @@
 <script setup lang="ts">
 import EmojionePartyPopper from '~icons/emojione/party-popper'
 import {useSequenceStore} from "../stores/sequence";
+import {computed} from "vue";
+import {fetchBalances} from "../utils/contracts";
+import {normalizeAddress} from "../utils/utils";
+import {Indexer} from "@0xsequence/indexer";
+import {sequence} from "0xsequence";
 
 
 const store = useSequenceStore()
+
+const toggleItemSelection = (tokenID: string) => {
+  const token = store.tokensMerged.find(token => token.tokenID === tokenID)
+  if (token !== undefined) {
+    console.log(token.checked)
+    token.checked = !token.checked;
+    console.log(token.checked)
+  }
+
+}
 
 </script>
 
@@ -16,8 +31,35 @@ const store = useSequenceStore()
         <div class="mr-4 text-gray-800">
           Item Selection Page
         </div>
+
         <EmojionePartyPopper/>
       </div>
+
+      <ul>
+        <li v-for="token in store.tokensMerged " @click="toggleItemSelection(token.tokenID)"
+            class="mb-2 rounded-xl bg-gradient-to-r bg-white border border-gray-200 p-2 sm:p-6 hover:bg-gray-100 ">
+          <div class="flex">
+            <div class="flex items-center h-5">
+              <input :id="`helper-checkbox${token.tokenID}`" aria-describedby="helper-checkbox-text" type="checkbox"
+                     value=""
+                     class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 focus:ring-2 "
+                     :checked="token.checked">
+
+            </div>
+
+            <div class="w-[48px] h-[48px]">
+              <img class="object-scale-down w-[48px] h-[48px]" :src="token.image">
+            </div>
+            <div class="ml-2 text-sm">
+              <label
+                     class="font-medium text-gray-900 dark:text-gray-300">{{ token.name }}</label>
+              <p id="helper-checkbox-text" class="text-xs font-normal text-gray-500 dark:text-gray-300">
+                {{ token.balance / 100 }}</p>
+            </div>
+          </div>
+        </li>
+      </ul>
+
     </div>
 
 

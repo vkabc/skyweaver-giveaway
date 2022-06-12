@@ -1,16 +1,74 @@
-# Vue 3 + TypeScript + Vite
+<!-- PROJECT LOGO -->
+<br />
+<div>
+  <div align="center">
+    <h1 style="font-weight: bold">Skyweaver Giveaway</h1>
+      <img src="https://user-images.githubusercontent.com/4152386/173242217-243ae090-8e91-44ef-819d-b44ea967aa72.png" alt="Logo"  />
+    <br />
+    <br />
+    <p align="center">
+        This is a vue app built with tailwind css and typescript. This app allows you to distribute erc 1155 tokens easily to multiple skyweaver users on the polygon network.
+<br />
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+</p>
 
-## Recommended IDE Setup
+  </div>
+</div>
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+<!-- TABLE OF CONTENTS -->
 
-## Type Support For `.vue` Imports in TS
+## Table of Contents
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+- [Table of Contents](#table-of-contents)
+- [Project Page](#about-the-project)
+- [Built-with](#built-with)
+- [Getting Started](#getting-started)
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+<br />
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+<!-- ABOUT THE PROJECT -->
+
+## Project Page
+
+https://skyweavergiveaway.vkabc.xyz/
+
+<br />
+
+## Built-with
+
+-   [Vue 3]
+-   [Vite]
+-   [Tailwind CSS]
+
+<br />
+
+<!-- GETTING STARTED -->
+
+## Getting Started
+
+This is an example of how you can set up your project locally. To get a local copy up and running follow these simple example steps.
+
+1.get cors anywhere 
+
+https://github.com/Rob--W/cors-anywhere
+
+```sh
+clone cors anywhere to local
+
+export PORT=49154
+export CORSANYWHERE_WHITELIST=localhost:3000
+npm i
+node server.js
+```
+
+
+2. Clone this project
+
+```sh
+clone the project to local
+
+npm i
+
+npm run dev  (check if its runnning localhost 3000 if not whitelist it for corsanywhere as mentioned above)
+```
+

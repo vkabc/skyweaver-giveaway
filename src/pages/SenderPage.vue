@@ -14,6 +14,7 @@ const searchResultCount = ref(-1)
 const userDetails: Ref<Receiver> = ref({account: {address: ""}})
 const receiverList: Ref<Receiver[]> = ref([])
 const addUser = debounce(() => {
+  if(!isUserFound.value) return
   receiverList.value.push(userDetails.value)
   userDetails.value = {account: {address: ""}}
   searchResultCount.value = -1
@@ -105,7 +106,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
         <EmojionePartyPopper/>
       </div>
 
-      <form class="flex items-center mb-10 ">
+      <div class="flex items-center mb-10 ">
         <div class="flex-grow">
           <label for="voice-search" class="sr-only">Search</label>
           <div class="relative w-full">
@@ -118,6 +119,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
               </svg>
             </div>
             <input type="text" id="voice-search" @input="onInput" ref="searchUserInputBox"
+                   v-on:keyup.enter="addUser"
                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                    placeholder="Search Skyweaver Users" required>
             <button type="button" class="flex absolute inset-y-0 right-0 items-center pr-3">
@@ -159,7 +161,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
           </svg>
           Add
         </button>
-      </form>
+      </div>
 
       <ul>
         <li v-for="receiver in receiverList "
@@ -197,7 +199,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
         Choose Quantity
       </div>
 
-<!--       :todo indexer loading-->
+      <!--       :todo indexer loading-->
       <div v-if="store.status.waitingFor !== 'done'">
         {{ store.status }}
       </div>

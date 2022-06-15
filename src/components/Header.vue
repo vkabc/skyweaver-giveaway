@@ -80,8 +80,11 @@ onMounted(async () => {
       </div>
       <button type="button" @click="toggleSignIn(store.sequenceWallet.isConnected())"
               class=" ml-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200  rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
-        <div class="font-bold text-gray-700 hidden sm:block">
-          {{ store.isLoggedIn ? store.sequenceWallet.session.accountAddress : "Connect wallet" }}
+        <div v-if="store.isLoggedIn" class="font-bold text-gray-700 sm:visible">
+          {{ store.sequenceWallet.session.accountAddress }}
+        </div>
+        <div v-show="!store.isLoggedIn" class="font-bold text-gray-700">
+          Connect
         </div>
         <p v-show="store.sequenceWallet.isConnected()">
           Logout

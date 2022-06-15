@@ -88,7 +88,11 @@ const deleteUser = (userAddress: string, e: PointerEvent) => {
 const deleteToken = (tokenID: string, e: PointerEvent) => {
 
   e.stopPropagation()
-  store.tokensMerged = store.tokensMerged.filter(token => token.tokenID !== tokenID)
+  const tokenIndex = store.tokensMerged.findIndex(token => token.tokenID === tokenID)
+  console.log(tokenIndex)
+  if(tokenIndex !== -1){
+    store.tokensMerged[tokenIndex].checked = false
+  }
 
 }
 </script>

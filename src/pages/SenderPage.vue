@@ -12,10 +12,9 @@ const isUserFound = ref(false)
 const searchUserInputBox = ref("")
 const searchResultCount = ref(-1)
 const userDetails: Ref<Receiver> = ref({account: {address: ""}})
-const receiverList: Ref<Receiver[]> = ref([])
 const addUser = debounce(() => {
   if(!isUserFound.value) return
-  receiverList.value.push(userDetails.value)
+  store.receiverList.push(userDetails.value)
   userDetails.value = {account: {address: ""}}
   searchResultCount.value = -1
   searchUserInputBox.value.value = ""
@@ -24,8 +23,8 @@ const addUser = debounce(() => {
 
 const chooseQuantity = async (token: TokensMerged) => {
 
-  console.log(receiverList.value.length)
-  if (receiverList.value.length < 1) {
+  console.log(store.receiverList.length)
+  if (store.receiverList.length < 1) {
     await Swal.fire({
       icon: 'error',
       title: 'Add a user',
@@ -44,7 +43,7 @@ const chooseQuantity = async (token: TokensMerged) => {
   if (userCancelled) {
     return
   }
-  if (quantity * receiverList.value.length <= toNumber(token.balance) / 100) {
+  if (quantity * store.receiverList.length <= toNumber(token.balance) / 100) {
     token.givingEachQuantity = quantity
   } else {
     Swal.fire({
@@ -82,7 +81,7 @@ const onInput = debounce(async (e) => {
 const deleteUser = (userAddress: string, e: PointerEvent) => {
 
   e.stopPropagation()
-  receiverList.value = receiverList.value.filter(receiver => receiver.account.address !== userAddress)
+  store.receiverList = store.receiverList.filter(receiver => receiver.account.address !== userAddress)
 
 }
 
@@ -164,7 +163,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
       </div>
 
       <ul>
-        <li v-for="receiver in receiverList "
+        <li v-for="receiver in store.receiverList "
             class="mb-2 rounded-xl bg-gradient-to-r bg-white border border-gray-200 p-2 sm:p-6 hover:bg-gray-100 ">
           <div class="flex">
 
@@ -217,7 +216,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
               <label
                   class="font-medium text-gray-900 dark:text-gray-300">{{ token.name }}</label>
               <p id="helper-checkbox-text" class="text-xl font-bold text-gray-500 dark:text-gray-300">
-                {{ token.givingEachQuantity }}x{{ receiverList.length }} person/{{ token.balance / 100 }}</p>
+                {{ token.givingEachQuantity }}x{{ store.receiverList.length }} person/{{ token.balance / 100 }}</p>
             </div>
 
             <div class="flex items-center h-5 ml-auto">

@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
-import { ref, watch } from "vue"
+import {Ref, ref, watch} from "vue"
 import { ethers } from "ethers"
 import { Session } from "@0xsequence/auth"
 import { chainConfigs, Indexers, supportedChains } from "../utils/multichain"
@@ -36,6 +36,7 @@ export const useSequenceStore = defineStore("sequence", () => {
     const isLoggedIn = ref(false)
     const sequenceWallet = ref(new sequence.Wallet("polygon"))
     const status = ref({ waitingFor: "signer" })
+    const receiverList: Ref<Receiver[]> = ref([])
     watch(isLoggedIn, async (newIsLoggedIn, oldIsLoggedIn) => {
         if (newIsLoggedIn) {
             await fetchTokenBalances()
@@ -254,6 +255,7 @@ export const useSequenceStore = defineStore("sequence", () => {
         sequenceApiClient,
         tokensMerged,
         status,
+        receiverList,
         connectWallet,
         disconnectWallet,
         onPageLaunch,

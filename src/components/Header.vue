@@ -22,41 +22,6 @@ const toggleSignIn = async (isConnected: boolean): Promise<void> => {
 }
 
 onMounted(async () => {
-  const indexer = await store.getIndexer()
-  const skyweaverAddress: string = "0x631998e91476da5b870d741192fc5cbc55f5a52e"
-
-  if (store.sequenceWallet.isConnected()) {
-    const session = store.sequenceWallet.getSession()
-    if (session !== undefined && session.accountAddress !== undefined) {
-      const balances = await fetchBalances(indexer.indexer, normalizeAddress(session.accountAddress))
-
-      console.log(balances)
-
-      const skyweaverTokens = balances.filter((balance) =>
-          balance.contractAddress === skyweaverAddress
-      )
-      console.log(skyweaverTokens)
-      const tokenMetadata = await indexer.metadata.getTokenMetadata({
-        chainID: "137",
-        contractAddress: normalizeAddress(skyweaverAddress),
-        tokenIDs: skyweaverTokens.map((token) => token.tokenID)
-      })
-      console.log(tokenMetadata)
-      const tokensMerged = skyweaverTokens.map(v => {
-        return (
-            {
-              ...v, ...tokenMetadata.tokenMetadata.find(metadata => metadata.tokenId === v.tokenID),
-              checked: false,
-              givingEachQuantity: 0,
-            }
-        )
-      });
-      console.log("tokensMerged", tokensMerged)
-      store.tokensMerged = tokensMerged
-    }
-  }
-
-
 })
 </script>
 <template>
@@ -81,7 +46,7 @@ onMounted(async () => {
       <button type="button" @click="toggleSignIn(store.sequenceWallet.isConnected())"
               class=" ml-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200  rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
         <div v-if="store.isLoggedIn" class="font-bold text-gray-700 hidden sm:block">
-          {{ store.sequenceWallet.session.accountAddress }}
+          {{ store.sequenceWallet.session ? store.sequenceWallet.session.accountAddress: '' }}
         </div>
         <div v-show="!store.isLoggedIn" class="font-bold text-gray-700">
           Connect

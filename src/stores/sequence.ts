@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
-import { ref } from "vue"
+import { ref, watch } from "vue"
 import { ethers } from "ethers"
 import { Session } from "@0xsequence/auth"
 import { chainConfigs, Indexers, supportedChains } from "../utils/multichain"
@@ -11,6 +11,7 @@ import { useRouter } from "vue-router"
 import { normalizeAddress } from "../utils/utils"
 import { Receiver, TokensMerged } from "../utils/interfaces"
 import Swal from "sweetalert2"
+import { fetchBalances } from "../utils/contracts"
 
 const corsProxy = config.corsAnywhereUrl
 export const services = {
@@ -35,6 +36,11 @@ export const useSequenceStore = defineStore("sequence", () => {
     const isLoggedIn = ref(false)
     const sequenceWallet = ref(new sequence.Wallet("polygon"))
     const status = ref({ waitingFor: "signer" })
+    watch(isLoggedIn, async (newIsLoggedIn, oldIsLoggedIn) => {
+        if (newIsLoggedIn) {
+            await fetchTokenBalances()
+        }
+    })
     const onPageLaunch = () => {
         isLoggedIn.value = sequenceWallet.value.isConnected()
     }
@@ -44,6 +50,7 @@ export const useSequenceStore = defineStore("sequence", () => {
     }
     const disconnectWallet = (): void => {
         sequenceWallet.value.disconnect()
+        tokensMerged.value = []
         isLoggedIn.value = false
     }
     const getIndexer = async (): Promise<{
@@ -165,25 +172,23 @@ export const useSequenceStore = defineStore("sequence", () => {
         })
 
         const signer = sequenceWallet.value.getSigner()
-        try{
+        try {
             const response = await signer.sendTransactionBatch(transactions)
-            if(response.confirmations && response.confirmations >= 2){
+            if (response.confirmations && response.confirmations >= 2) {
                 await Swal.fire({
                     icon: "success",
                     title: "Successful",
                     text: "Items successfully sent",
                 })
                 // :todo refresh user tokens
-            }
-            else{
+            } else {
                 await Swal.fire({
                     icon: "error",
                     title: "Check Sequence Wallet",
                     text: "Check Sequence Wallet for transaction",
                 })
             }
-        }
-        catch (e){
+        } catch (e) {
             await Swal.fire({
                 icon: "error",
                 title: "Not Sent",
@@ -191,7 +196,56 @@ export const useSequenceStore = defineStore("sequence", () => {
             })
             return
         }
+    }
 
+    const fetchTokenBalances = async () => {
+        //sequence indexer and metadataClient has not been initialized
+        if (Object.keys(sequenceApiClient.value).length == 0) {
+            await getIndexer()
+        }
+
+        const skyweaverAddress: string =
+            "0x631998e91476da5b870d741192fc5cbc55f5a52e"
+
+        if (sequenceWallet.value.isConnected()) {
+            const session = sequenceWallet.value.getSession()
+            if (session !== undefined && session.accountAddress !== undefined) {
+                const balances = await fetchBalances(
+                    sequenceApiClient.value.indexer as Indexer,
+                    normalizeAddress(session.accountAddress)
+                )
+
+                console.log(balances)
+
+                const skyweaverTokens = balances.filter(
+                    (balance) => balance.contractAddress === skyweaverAddress
+                )
+                console.log(skyweaverTokens)
+                const tokenMetadata =
+                    await sequenceApiClient.value.metadataClient.getTokenMetadata(
+                        {
+                            chainID: "137",
+                            contractAddress: normalizeAddress(skyweaverAddress),
+                            tokenIDs: skyweaverTokens.map(
+                                (token) => token.tokenID
+                            ),
+                        }
+                    )
+                console.log(tokenMetadata)
+                const tokensWithData = skyweaverTokens.map((v) => {
+                    return {
+                        ...v,
+                        ...tokenMetadata.tokenMetadata.find(
+                            (metadata) => metadata.tokenId === v.tokenID
+                        ),
+                        checked: false,
+                        givingEachQuantity: 0,
+                    }
+                })
+                console.log("tokensMerged", tokensMerged)
+                tokensMerged.value = tokensWithData
+            }
+        }
     }
 
     return {
@@ -205,6 +259,7 @@ export const useSequenceStore = defineStore("sequence", () => {
         onPageLaunch,
         getIndexer,
         sendTransaction,
+        fetchTokenBalances,
     }
 })
 

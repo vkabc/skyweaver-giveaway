@@ -2,14 +2,14 @@ import { sequence } from "0xsequence"
 import { blacklistedContracts } from "./verified"
 
 import {
-    ContractType as SequenceContractType,
+    ContractType as SequenceContractType, Indexer,
     TokenBalance,
 } from "@0xsequence/indexer"
 import { isSupportedChain } from "./multichain"
 import { normalizeAddress } from "./utils"
 
 export async function fetchBalances(
-    indexer: sequence.indexer.Indexer,
+    indexer: Indexer,
     accountAddress: string
 ): Promise<Array<TokenBalance>> {
     const balances = (

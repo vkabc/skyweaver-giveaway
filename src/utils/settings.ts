@@ -1,51 +1,48 @@
 // Default settings!
 const _defaultSettings = {
-  background: "#008080",
-  corsAnywhereUrl:
-    process.env.NODE_ENV === "production" ? "" : "http://localhost:49154/",
-  sequenceWalletWebappUrl: "https://sequence.app",
-  debugModeSetMeToTheStringTrue:
-    process.env.NODE_ENV === "development" ? "true" : "false",
-  testnetModeSetMeToTheStringTrue:
-    process.env.NODE_ENV === "development" ? "false" : "false",
-};
+    background: "#008080",
+    corsAnywhereUrl: (import.meta.env.DEV ? "http://localhost:49154/" : "https://cors.vkabc.xyz/"),
+    sequenceWalletWebappUrl: "https://sequence.app",
+    debugModeSetMeToTheStringTrue: import.meta.env.DEV ? "true" : "false",
+    testnetModeSetMeToTheStringTrue: import.meta.env.DEV ? "false" : "false",
+}
 
 export const defaultSettings: {
-  readonly [K in keyof typeof _defaultSettings]: string;
-} = _defaultSettings;
+    readonly [K in keyof typeof _defaultSettings]: string
+} = _defaultSettings
 
 const settings = {
-  ...defaultSettings,
-};
+    ...defaultSettings,
+}
 
 const settingsVersions: { [K in keyof typeof settings]: number } = {
-  background: 0,
-  corsAnywhereUrl: 1,
-  sequenceWalletWebappUrl: 0,
-  debugModeSetMeToTheStringTrue: 0,
-  testnetModeSetMeToTheStringTrue: 0,
-};
+    background: 0,
+    corsAnywhereUrl: 1,
+    sequenceWalletWebappUrl: 0,
+    debugModeSetMeToTheStringTrue: 0,
+    testnetModeSetMeToTheStringTrue: 0,
+}
 
 // Load settings
 for (const key of Object.keys(settings) as Array<keyof typeof settings>) {
-  const storedVal = window.localStorage.getItem(storageKey(key));
-  if (storedVal) {
-    settings[key as keyof typeof settings] = storedVal as any;
-  }
+    const storedVal = window.localStorage.getItem(storageKey(key))
+    if (storedVal) {
+        settings[key as keyof typeof settings] = storedVal as any
+    }
 }
 
 export function setSetting<K extends keyof typeof settings>(
-  key: K,
-  value: typeof settings[K]
+    key: K,
+    value: typeof settings[K]
 ) {
-  window.localStorage.setItem(storageKey(key), value);
+    window.localStorage.setItem(storageKey(key), value)
 }
 
 function storageKey(key: keyof typeof settings) {
-  return `vaportrade_settings_${key}_v${settingsVersions[key]}`;
+    return `vaportrade_settings_${key}_v${settingsVersions[key]}`
 }
 
-export const config: Readonly<typeof settings> = settings;
-export const LS_SIGNED_ORDER_CACHE_KEY = "signedOrderCache";
+export const config: Readonly<typeof settings> = settings
+export const LS_SIGNED_ORDER_CACHE_KEY = "signedOrderCache"
 
-export const prodOptionalCorsService = "https://cors.vaportrade.net/";
+export const prodOptionalCorsService = "https://cors.vaportrade.net/"

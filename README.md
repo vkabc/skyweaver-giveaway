@@ -60,7 +60,7 @@ https://github.com/Rob--W/cors-anywhere
 clone cors anywhere to local
 
 export PORT=49154
-export CORSANYWHERE_WHITELIST=localhost:3000
+export CORSANYWHERE_WHITELIST=http://localhost:3000
 npm i
 node server.js
 ```
@@ -73,6 +73,6 @@ clone the project to local
 
 npm i
 
-npm run dev  (check if its runnning localhost 3000 if not whitelist it for corsanywhere as mentioned above)
+npm run dev  (check if its running localhost 3000 if not whitelist it for corsanywhere as mentioned above)
 ```
 

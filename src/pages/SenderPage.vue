@@ -114,7 +114,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
           <label for="voice-search" class="sr-only">Search</label>
           <div class="relative w-full">
             <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-              <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+              <svg class="w-5 h-5 text-gray-500 " fill="currentColor" viewBox="0 0 20 20"
                    xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd"
                       d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -123,7 +123,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
             </div>
             <input type="text" id="voice-search" @input="onInput" ref="searchUserInputBox"
                    v-on:keyup.enter="addUser"
-                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5   "
                    placeholder="Search Skyweaver Users" required>
             <button type="button" class="flex absolute inset-y-0 right-0 items-center pr-3">
               <svg class="w-4 h-4 text-gray-500 hover:text-gray-900" xmlns="http://www.w3.org/2000/svg"
@@ -139,11 +139,11 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
 
           </div>
           <div class="absolute ">
-            <p v-if="isUserFound" class="ml-2 mt-2 text-sm text-green-600 dark:text-green-500">User
+            <p v-if="isUserFound" class="ml-2 mt-2 text-sm text-green-600 ">User
               {{ userDetails.account.name }} is found with
               address:
               {{ userDetails.account.address }}</p>
-            <p v-show="searchResultCount === 0" class="ml-2 mt-2 text-sm text-red-600 dark:text-red-500"><span
+            <p v-show="searchResultCount === 0" class="ml-2 mt-2 text-sm text-red-600 "><span
                 class="font-bold">Oh, snapp!</span>
               User not
               found</p>
@@ -173,8 +173,8 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
 
             <div class="ml-2 text-sm">
               <label
-                  class="font-medium text-gray-900 dark:text-gray-300">{{ receiver.account.name }}</label>
-              <p class="text-xs font-normal text-gray-500 dark:text-gray-300">
+                  class="font-medium text-gray-900 ">{{ receiver.account.name }}</label>
+              <p class="text-xs font-normal text-gray-500 ">
                 {{ receiver.account.address }}</p>
             </div>
 
@@ -218,8 +218,8 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
             </div>
             <div class="ml-2 text-sm">
               <label
-                  class="font-medium text-gray-900 dark:text-gray-300">{{ token.name }}</label>
-              <p id="helper-checkbox-text" class="text-xl font-bold text-gray-500 dark:text-gray-300">
+                  class="font-medium text-gray-900 ">{{ token.name }}</label>
+              <p id="helper-checkbox-text" class="text-xl font-bold text-gray-500 ">
                 {{ token.givingEachQuantity }}x{{ store.receiverList.length }} person/{{ token.balance / 100 }}</p>
             </div>
 
@@ -248,8 +248,8 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
 
             <div class="ml-2 text-sm">
               <label
-                  class="font-medium text-gray-900 dark:text-gray-300">Go back</label>
-              <p class="text-xl font-bold text-gray-500 dark:text-gray-300">
+                  class="font-medium text-gray-900 ">Go back</label>
+              <p class="text-xl font-bold text-gray-500 ">
                 Add More Items
               </p>
             </div>
@@ -261,7 +261,7 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
         </li>
       </ul>
       <button type="button" @click="store.sendTransaction(store.receiverList, store.tokensMerged)"
-              class="w-full font-bold text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800  rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
+              class="w-full font-bold text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300   rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2">
         Submit to Sequence!
       </button>
     </div>

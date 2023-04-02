@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "prod": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

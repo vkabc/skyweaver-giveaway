@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia"
-import {Ref, ref, watch} from "vue"
+import { Ref, ref, watch } from "vue"
 import { ethers } from "ethers"
 import { Session } from "@0xsequence/auth"
 import { chainConfigs, Indexers, supportedChains } from "../utils/multichain"
@@ -30,9 +30,10 @@ export const useSequenceStore = defineStore("sequence", () => {
         {} as {
             indexer: Indexer
             metadataClient: sequence.metadata.SequenceMetadataClient
-        }
+        },
     )
     const tokensMerged = ref([] as TokensMerged[])
+
     const isLoggedIn = ref(false)
     const sequenceWallet = ref(new sequence.Wallet("polygon"))
     const status = ref({ waitingFor: "signer" })
@@ -44,9 +45,127 @@ export const useSequenceStore = defineStore("sequence", () => {
     })
     const onPageLaunch = () => {
         isLoggedIn.value = sequenceWallet.value.isConnected()
+        receiverList.value = [
+
+            {"account":{"address":"0x906cf8372989d8ec534ae83999eec3109","name":"yittttDemo"}},
+
+            {"account":{"address":"0x6e8263972989d8ec534ae828827937a10a","name":"yessDemo"}},
+
+            ]
+
+        tokensMerged.value = [
+          {
+            "contractType": "ERC1155",
+            "contractAddress": "0x631998e91476da5b870d741192fc5cbc55f5a52e",
+            "accountAddress": "0x3fc3973f8b82ef38857e34356fb9e00108bb5c80",
+            "tokenID": "131093",
+            "balance": "400",
+            "blockHash": "0x42b43670f297a837549d295c154375aa79ec9ef2925b43c8b31212be0eaac26c",
+            "blockNumber": 31591649,
+            "chainId": 137,
+            "tokenId": "131093",
+            "name": "Psyche (Gold)",
+            "description": "Summon: The enemy draws a card.\n\n\"Such creatures stalk the dreamfield, hunting minds fat with wisdom, and laden with secrets.\" - Lotus",
+            "image": "https://assets.skyweaver.net/nUHpx2Yv/webapp/cards/full-cards/en/6x/21-gold.png",
+            "decimals": 2,
+            "properties": {
+                "Artist: shapo": { "name": "Artist", "value": "Igor Shapochkin" },
+                "attachment": "Memesis",
+                "baseCardId": 21,
+                "cardType": "Unit",
+                "element": "Mind",
+                "health": 5,
+                "mana": 2,
+                "power": 3,
+                "prism": "Strength",
+                "trait: Guard": { "name": "Trait", "value": "Guard" },
+                "type": "Gold",
+            },
+            "external_url": "https://play.skyweaver.net/card/21/gold",
+            "attributes": null,
+            "checked": false,
+            "givingEachQuantity": 0,
+        }, {
+            "contractType": "ERC1155",
+            "contractAddress": "0x631998e91476da5b870d741192fc5cbc55f5a52e",
+            "accountAddress": "0x3fc3973f8b82ef38857e34356fb9e00108bb5c80",
+            "tokenID": "132146",
+            "balance": "400",
+            "blockHash": "0x42b43670f297a837549d295c154375aa79ec9ef2925b43c8b31212be0eaac26c",
+            "blockNumber": 31591649,
+            "chainId": 137,
+            "tokenId": "132146",
+            "name": "Mountain Lion (Gold)",
+            "description": "Banner on your cards gives your hero +2 power instead of +1 power.\n\n\"If I had nine lives, or a hundred, I would give them all in defense of those in need.\"",
+            "image": "https://assets.skyweaver.net/jyhf25_r/webapp/cards/full-cards/en/6x/1074-gold.png",
+            "decimals": 2,
+            "properties": {
+                "Artist: edsoa": { "name": "Artist", "value": "Edvan Soares" },
+                "attachment": "Shield",
+                "baseCardId": 1074,
+                "cardType": "Unit",
+                "element": "Light",
+                "health": 6,
+                "mana": 7,
+                "power": 6,
+                "prism": "Agility",
+                "trait: Banner": { "name": "Trait", "value": "Banner" },
+                "trait: Guard": { "name": "Trait", "value": "Guard" },
+                "type": "Gold",
+            },
+            "external_url": "https://play.skyweaver.net/card/1074/gold",
+            "attributes": null,
+            "checked": false,
+            "givingEachQuantity": 0,
+        }, {
+            "contractType": "ERC1155",
+            "contractAddress": "0x631998e91476da5b870d741192fc5cbc55f5a52e",
+            "accountAddress": "0x3fc3973f8b82ef38857e34356fb9e00108bb5c80",
+            "tokenID": "135118",
+            "balance": "200",
+            "blockHash": "0x42b43670f297a837549d295c154375aa79ec9ef2925b43c8b31212be0eaac26c",
+            "blockNumber": 31591649,
+            "chainId": 137,
+            "tokenId": "135118",
+            "name": "Mulch (Gold)",
+            "description": "Do 1 damage to target unit.Slay: Summon Elderwood.\n\n\"Helped fertilize the jungle.\" - Saurian Saying, meaning 'Was Eaten by Plants'",
+            "image": "https://assets.skyweaver.net/IMluY5QW/webapp/cards/full-cards/en/6x/4046-gold.png",
+            "decimals": 2,
+            "properties": {
+                "Artist: case": { "name": "Artist", "value": "Casey Edwards" },
+                "baseCardId": 4046,
+                "cardType": "Spell",
+                "element": "Earth",
+                "mana": 1,
+                "prism": "Intellect",
+                "type": "Gold",
+            },
+            "external_url": "https://play.skyweaver.net/card/4046/gold",
+            "attributes": null,
+            "checked": false,
+            "givingEachQuantity": 0,
+        }, {
+            "contractType": "ERC1155",
+            "contractAddress": "0x631998e91476da5b870d741192fc5cbc55f5a52e",
+            "accountAddress": "0x3fc3973f8b82ef38857e34356fb9e00108bb5c80",
+            "tokenID": "262150",
+            "balance": "200",
+            "blockHash": "0xdab3e7d279aa6b1288a1b334bd0c07a0f402d168f072fa0f2002f0bf66ccd910",
+            "blockNumber": 29482513,
+            "chainId": 137,
+            "tokenId": "262150",
+            "name": "Topaz Crystal",
+            "description": "Crystals change the color of your username in-game! They reflect how long a player's been part of Skyweaver's journey and were distributed for free at Open Beta on February 8, 2022. The Topaz Crystal was distributed to players who joined during Soft Launch between November 25, 2021 and February 7th, 2022 and reached level 5.",
+            "image": "https://assets.skyweaver.net/EWxuWBFM/cosmetics/crystals/skyweaver-crystal-6.png",
+            "decimals": 2,
+            "properties": { "color": "#08EBDD", "type": "Crystal" },
+            "attributes": null,
+            "checked": false,
+            "givingEachQuantity": 0,
+        } ]
     }
     const connectWallet = async (): Promise<void> => {
-        await sequenceWallet.value.connect()
+        //await sequenceWallet.value.connect()
         isLoggedIn.value = true
     }
     const disconnectWallet = (): void => {
@@ -60,7 +179,7 @@ export const useSequenceStore = defineStore("sequence", () => {
     }> => {
         // Hardcoded useless wallet key, so that you can get into Sequence API.
         const wallet = ethers.Wallet.fromMnemonic(
-            "charge era satisfy ocean inmate miracle frown slab security note cover amused"
+            "charge era satisfy ocean inmate miracle frown slab security note cover amused",
         )
         status.value = { waitingFor: "signer_address" }
         const signerAddress = await wallet.getAddress()
@@ -73,14 +192,14 @@ export const useSequenceStore = defineStore("sequence", () => {
                 .filter(
                     ([_, chain]) =>
                         (config.testnetModeSetMeToTheStringTrue === "true") ===
-                        chain.testnet
+                        chain.testnet,
                 )
                 .reduce(
                     (networks, [chainId, chain]) => [
                         ...networks,
                         { ...chain, chainId: Number.parseInt(chainId) },
                     ],
-                    [] as NetworkConfig[]
+                    [] as NetworkConfig[],
                 ),
             referenceSigner: signerAddress,
             signers: [
@@ -103,13 +222,13 @@ export const useSequenceStore = defineStore("sequence", () => {
                     session.getIndexerClient(chainID).then((indexer) => ({
                         chainID,
                         indexer,
-                    }))
-                )
+                    })),
+                ),
             ).then((p) =>
                 p.reduce<Indexers>((indexers, { chainID, indexer }) => {
                     indexers[chainID] = indexer
                     return indexers
-                }, {} as any)
+                }, {} as any),
             ),
             session.getMetadataClient(),
         ])
@@ -125,78 +244,9 @@ export const useSequenceStore = defineStore("sequence", () => {
     }
     const sendTransaction = async (
         receiverList: Receiver[],
-        tokenList: TokensMerged[]
+        tokenList: TokensMerged[],
     ) => {
-        const finalTokenList = tokenList.filter((token) => {
-            return token.checked && token.givingEachQuantity > 0
-        })
-        // :todo we can also do a final check for quantity sending is it sufficient
-        if (finalTokenList.length < 1) {
-            await Swal.fire({
-                icon: "error",
-                title: "Sending no tokens!",
-                text: "Aborting mission!",
-            })
-            return
-        } else if (receiverList.length < 1) {
-            await Swal.fire({
-                icon: "error",
-                title: "Sending to no one!",
-                text: "Aborting mission!",
-            })
-            return
-        }
-        const erc1155Interface = new ethers.utils.Interface([
-            "function safeBatchTransferFrom(address _from, address _to, uint256[] _id, uint256[] _value, bytes calldata _data)",
-        ])
-        const senderAddress = await sequenceWallet.value.getAddress()
-
-        let transactions: { to: string; data: string }[] = []
-
-        const skyweaverAddress: string =
-            "0x631998e91476da5b870d741192fc5cbc55f5a52e"
-
-        const tokenIds = finalTokenList.map((token) => token.tokenID)
-        const amountsForEachToken = finalTokenList.map(
-            (token) => token.givingEachQuantity * 100
-        )
-        receiverList.forEach((receiver) => {
-            const functionFragment: string =
-                erc1155Interface.encodeFunctionData("safeBatchTransferFrom", [
-                    senderAddress,
-                    receiver.account.address,
-                    tokenIds,
-                    amountsForEachToken,
-                    "0x",
-                ])
-            transactions.push({ to: skyweaverAddress, data: functionFragment })
-        })
-
-        const signer = sequenceWallet.value.getSigner()
-        try {
-            const response = await signer.sendTransactionBatch(transactions)
-            if (response.confirmations && response.confirmations >= 2) {
-                await Swal.fire({
-                    icon: "success",
-                    title: "Successful",
-                    text: "Items successfully sent",
-                })
-                // :todo refresh user tokens
-            } else {
-                await Swal.fire({
-                    icon: "error",
-                    title: "Check Sequence Wallet",
-                    text: "Check Sequence Wallet for transaction",
-                })
-            }
-        } catch (e) {
-            await Swal.fire({
-                icon: "error",
-                title: "Not Sent",
-                text: "Aborting mission!",
-            })
-            return
-        }
+        alert('demo ended')
     }
 
     const fetchTokenBalances = async () => {
@@ -213,13 +263,13 @@ export const useSequenceStore = defineStore("sequence", () => {
             if (session !== undefined && session.accountAddress !== undefined) {
                 const balances = await fetchBalances(
                     sequenceApiClient.value.indexer as Indexer,
-                    normalizeAddress(session.accountAddress)
+                    normalizeAddress(session.accountAddress),
                 )
 
                 console.log(balances)
 
                 const skyweaverTokens = balances.filter(
-                    (balance) => balance.contractAddress === skyweaverAddress
+                    (balance) => balance.contractAddress === skyweaverAddress,
                 )
                 console.log(skyweaverTokens)
                 const tokenMetadata =
@@ -228,16 +278,16 @@ export const useSequenceStore = defineStore("sequence", () => {
                             chainID: "137",
                             contractAddress: normalizeAddress(skyweaverAddress),
                             tokenIDs: skyweaverTokens.map(
-                                (token) => token.tokenID
+                                (token) => token.tokenID,
                             ),
-                        }
+                        },
                     )
                 console.log(tokenMetadata)
                 const tokensWithData = skyweaverTokens.map((v) => {
                     return {
                         ...v,
                         ...tokenMetadata.tokenMetadata.find(
-                            (metadata) => metadata.tokenId === v.tokenID
+                            (metadata) => metadata.tokenId === v.tokenID,
                         ),
                         checked: false,
                         givingEachQuantity: 0,

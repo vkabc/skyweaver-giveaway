@@ -203,9 +203,9 @@ const deleteToken = (tokenID: string, e: PointerEvent) => {
       </div>
 
       <!--       :todo indexer loading-->
-      <div v-if="store.status.waitingFor !== 'done'">
-        {{ store.status }}
-      </div>
+<!--      <div v-if="store.status.waitingFor !== 'done'">-->
+<!--        {{ store.status }}-->
+<!--      </div>-->
       <ul class="mb-4">
 
         <li v-for="token in store.tokensMerged.filter((theToken) => theToken.checked)  "

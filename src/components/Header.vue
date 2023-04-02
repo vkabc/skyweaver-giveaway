@@ -35,14 +35,25 @@ onMounted(async () => {
 				px-8
 				border-2
 				flex
+				flex-none
 				items-center
 			"
     >
       <Rabbit class="mr-3"/>
 
+
       <div>
         <div class="font-bold lg:text-xl md:text-lg text-md">Skyweaver Giveaway</div>
       </div>
+
+        <div class="text-amber-600">
+            This is a demo and not connected to on chain data, on chain can be setup by following instruction from
+
+           <a class="underline" href="//www.github.com/vkabc/skyweaver-giveaway">
+               https://github.com/vkabc/skyweaver-giveaway#getting-started
+           </a>
+            main branch
+        </div>
       <button type="button" @click="toggleSignIn(store.sequenceWallet.isConnected())"
               class=" ml-auto text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200  rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">
         <div v-if="store.isLoggedIn" class="font-bold text-gray-700 hidden sm:block">
